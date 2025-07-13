@@ -1,0 +1,121 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Edit Ticket</h2>
+      <button class="close-btn" (click)="onClose()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Title *</label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          class="form-control"
+          placeholder="Enter ticket title"
+          [class.error]="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched"
+        />
+        <div class="error-message" *ngIf="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched">
+          <span *ngIf="ticketForm.get('title')?.errors?.['required']">Title is required</span>
+          <span *ngIf="ticketForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control"
+          placeholder="Enter ticket description"
+          rows="4"
+          [class.error]="ticketForm.get('description')?.invalid && ticketForm.get('description')?.touched"
+        ></textarea>
+        <div class="error-message" *ngIf="ticketForm.get('description')?.invalid && ticketForm.get('description')?.touched">
+          <span *ngIf="ticketForm.get('description')?.errors?.['required']">Description is required</span>
+          <span *ngIf="ticketForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="priority">Priority *</label>
+          <select
+            id="priority"
+            formControlName="priority"
+            class="form-control"
+          >
+            <option *ngFor="let priority of priorities" [value]="priority.value">
+              {{ priority.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status *</label>
+          <select
+            id="status"
+            formControlName="status"
+            class="form-control"
+          >
+            <option *ngFor="let status of statuses" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Labels</label>
+        <div class="labels-container">
+          <div class="current-labels" *ngIf="labels.length > 0">
+            <span 
+              class="label-chip" 
+              *ngFor="let label of labels"
+              [style.background-color]="getLabelColor(label)"
+            >
+              {{ label }}
+              <button type="button" class="remove-label" (click)="onRemoveLabel(label)">
+                <i class="fas fa-times"></i>
+              </button>
+            </span>
+          </div>
+          <div class="add-label-input">
+            <input
+              type="text"
+              [(ngModel)]="newLabel"
+              placeholder="Add new label"
+              class="form-control"
+              (keypress)="onKeyPress($event)"
+            />
+            <button type="button" class="add-label-btn" (click)="onAddLabel()">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="!ticketForm.valid || isSubmitting"
+        >
+          <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+          <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+          {{ isSubmitting ? 'Updating...' : 'Update Ticket' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="kanban-board">
+  <div class="kanban-header">
+    <div class="header-content">
+      <h1>Project Kanban Board</h1>
+      <p class="drag-hint">
+        <i class="fas fa-hand-paper"></i>
+        Drag and drop tickets between columns to change their status
+      </p>
+    </div>
+    <button class="btn btn-primary" (click)="onCreateTicket()">
+      <i class="fas fa-plus"></i> Add Ticket
+    </button>
+  </div>
+
+  <div class="kanban-columns">
+    <app-kanban-column
+      *ngFor="let column of columns"
+      [column]="column"
+      (ticketMoved)="onTicketMoved($event)"
+      (ticketDeleted)="onTicketDeleted($event)"
+      (ticketEdit)="onTicketEdit($event)"
+    ></app-kanban-column>
+  </div>
+
+  <app-create-ticket-modal
+    *ngIf="showCreateModal"
+    (close)="onModalClose()"
+    (ticketCreated)="onTicketCreated()"
+  ></app-create-ticket-modal>
+
+  <app-edit-ticket-modal
+    *ngIf="showEditModal && ticketToEdit"
+    [ticket]="ticketToEdit"
+    (close)="onEditModalClose()"
+    (ticketUpdated)="onTicketUpdated()"
+  ></app-edit-ticket-modal>
+</div>

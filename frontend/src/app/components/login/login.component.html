@@ -1,0 +1,54 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2 class="login-title">Login</h2>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username or Email</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          class="form-control"
+          [class.is-invalid]="f['username'].invalid && f['username'].touched"
+          placeholder="Enter your username or email"
+        >
+        <div *ngIf="f['username'].invalid && f['username'].touched" class="invalid-feedback">
+          Username is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control"
+          [class.is-invalid]="f['password'].invalid && f['password'].touched"
+          placeholder="Enter your password"
+        >
+        <div *ngIf="f['password'].invalid && f['password'].touched" class="invalid-feedback">
+          Password is required
+        </div>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block"
+        [disabled]="isSubmitting || loginForm.invalid"
+      >
+        <span *ngIf="isSubmitting" class="spinner"></span>
+        {{ isSubmitting ? 'Signing In...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Don't have an account? <a routerLink="/register">Sign up here</a></p>
+    </div>
+  </div>
+</div>

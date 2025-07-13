@@ -1,0 +1,123 @@
+.kanban-column {
+  min-width: 320px;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  transition: all 0.2s ease;
+
+  &.drag-over {
+    transform: scale(1.02);
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3);
+    border: 2px dashed #2196f3;
+  }
+}
+
+.column-header {
+  padding: 16px 20px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .ticket-count {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+.column-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px; /* Ensure there's always a drop zone */
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  opacity: 0.7;
+
+  i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+.drop-zone-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 10px;
+  border: 2px dashed #2196f3;
+  border-radius: 8px;
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #2196f3;
+  font-weight: 500;
+  animation: pulse 1s infinite;
+
+  i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  span {
+    font-size: 0.9rem;
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .kanban-column {
+    min-width: 100%;
+    max-width: 100%;
+    max-height: none;
+  }
+}

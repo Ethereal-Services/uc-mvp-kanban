@@ -1,0 +1,33 @@
+<div class="kanban-column" 
+     [style.background-color]="getColumnColor()"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="onDrop($event)"
+     [attr.data-column-status]="column.status"
+     [attr.data-column-title]="column.title">
+  
+  <div class="column-header" [style.background-color]="getColumnHeaderColor()">
+    <h3>{{ column.title }}</h3>
+    <span class="ticket-count">{{ column.tickets.length }}</span>
+  </div>
+
+  <div class="column-content">
+    <div class="drop-zone-indicator" *ngIf="isDraggedOver">
+      <i class="fas fa-arrow-down"></i>
+      <span>Drop ticket here</span>
+    </div>
+    
+    <app-kanban-ticket
+      *ngFor="let ticket of column.tickets"
+      [ticket]="ticket"
+      (ticketMoved)="onTicketMoved($event)"
+      (ticketDeleted)="onTicketDeleted($event)"
+      (ticketEdit)="onTicketEdit($event)"
+    ></app-kanban-ticket>
+    
+    <div *ngIf="column.tickets.length === 0 && !isDraggedOver" class="empty-state">
+      <i class="fas fa-inbox"></i>
+      <p>No tickets yet</p>
+    </div>
+  </div>
+</div>

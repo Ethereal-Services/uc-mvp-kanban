@@ -1,0 +1,57 @@
+<div class="kanban-ticket" 
+     draggable="true"
+     (dragstart)="onDragStart($event)"
+     (dragend)="onDragEnd($event)"
+     (touchstart)="onTouchStart($event)"
+     (touchend)="onTouchEnd($event)"
+     [attr.data-ticket-id]="ticket.id"
+     [attr.title]="'Drag to move ticket: ' + ticket.title">
+  
+  <div class="ticket-header">
+    <div class="priority-badge" [style.background-color]="getPriorityColor()">
+      <i [class]="getPriorityIcon()"></i>
+      <span>{{ ticket.priority }}</span>
+    </div>
+    <div class="ticket-actions">
+      <button class="test-btn" (click)="testMove()" title="Test move (temporary)">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <button class="edit-btn" 
+              (click)="onEdit()" 
+              (mousedown)="$event.stopPropagation()" 
+              (dragstart)="$event.preventDefault()"
+              draggable="false"
+              title="Edit ticket">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="delete-btn" 
+              (click)="onDelete()" 
+              (mousedown)="$event.stopPropagation()" 
+              (dragstart)="$event.preventDefault()"
+              draggable="false"
+              title="Delete ticket">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="ticket-content">
+    <h4 class="ticket-title">{{ ticket.title }}</h4>
+    <p class="ticket-description">{{ ticket.description }}</p>
+  </div>
+
+  <div class="ticket-labels" *ngIf="ticket.labels.length > 0">
+    <span class="label" 
+          *ngFor="let label of ticket.labels"
+          [style.background-color]="getLabelColor(label)">
+      {{ label }}
+    </span>
+  </div>
+
+  <div class="ticket-footer">
+    <span class="created-date">
+      <i class="fas fa-calendar-alt"></i>
+      {{ formatDate(ticket.createdAt) }}
+    </span>
+  </div>
+</div>
