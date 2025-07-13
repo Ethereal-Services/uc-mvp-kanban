@@ -112,6 +112,161 @@ erDiagram
 - **Timestamps**: Automatic tracking of creation and modification times
 - **UUID Primary Keys**: Tickets use UUIDs for better security and distribution
 
+## Application Architecture
+
+The application follows a modern full-stack architecture with clear separation of concerns:
+
+```mermaid
+graph TB
+    subgraph "Frontend (Angular)"
+        A[User Interface] --> B[Angular Components]
+        B --> C[Services & Guards]
+        C --> D[HTTP Interceptors]
+        
+        subgraph "Components"
+            B1[Login/Register]
+            B2[Dashboard]
+            B3[Kanban Board]
+            B4[Kanban Column]
+            B5[Kanban Ticket]
+            B6[Create/Edit Modals]
+        end
+        
+        subgraph "Services"
+            C1[Auth Service]
+            C2[Kanban Service]
+            C3[Auth Guard]
+            C4[Auth Interceptor]
+        end
+        
+        B --> B1
+        B --> B2
+        B --> B3
+        B --> B4
+        B --> B5
+        B --> B6
+        
+        C --> C1
+        C --> C2
+        C --> C3
+        C --> C4
+    end
+    
+    subgraph "Backend (Flask)"
+        E[Flask API] --> F[Authentication]
+        E --> G[Ticket Management]
+        F --> H[JWT Manager]
+        G --> I[SQLAlchemy ORM]
+        
+        subgraph "API Endpoints"
+            F1[POST /api/register]
+            F2[POST /api/login]
+            F3[GET /api/profile]
+            G1[GET /api/tickets]
+            G2[POST /api/tickets]
+            G3[PUT /api/tickets/:id]
+            G4[DELETE /api/tickets/:id]
+        end
+        
+        F --> F1
+        F --> F2
+        F --> F3
+        G --> G1
+        G --> G2
+        G --> G3
+        G --> G4
+    end
+    
+    subgraph "Database (MySQL)"
+        J[(User Table)]
+        K[(Ticket Table)]
+        J --> K
+    end
+    
+    subgraph "Security Layer"
+        L[JWT Tokens]
+        M[Bcrypt Password Hashing]
+        N[CORS Configuration]
+        O[Input Validation]
+    end
+    
+    %% Data Flow
+    A -->|HTTP Requests| D
+    D -->|Authenticated Requests| E
+    E -->|Database Operations| I
+    I -->|SQL Queries| J
+    I -->|SQL Queries| K
+    
+    %% Security Flow
+    F -->|Generate| L
+    F -->|Hash Passwords| M
+    E -->|Enable| N
+    E -->|Validate| O
+    
+    %% Response Flow
+    E -->|JSON Response| D
+    D -->|Update UI| A
+    
+    %% Styling
+    classDef frontend fill:#e1f5fe
+    classDef backend fill:#f3e5f5
+    classDef database fill:#e8f5e8
+    classDef security fill:#fff3e0
+    
+    class A,B,C,D,B1,B2,B3,B4,B5,B6,C1,C2,C3,C4 frontend
+    class E,F,G,H,I,F1,F2,F3,G1,G2,G3,G4 backend
+    class J,K database
+    class L,M,N,O security
+```
+
+### Architecture Components
+
+#### **Frontend Layer (Angular)**
+- **User Interface**: Modern, responsive UI with drag-and-drop functionality
+- **Components**: Modular components for authentication, dashboard, and Kanban board
+- **Services**: HTTP services for API communication and state management
+- **Guards**: Route protection ensuring authenticated access
+- **Interceptors**: Automatic JWT token attachment and error handling
+
+#### **Backend Layer (Flask)**
+- **REST API**: RESTful endpoints for user management and ticket operations
+- **Authentication**: JWT-based stateless authentication system
+- **ORM**: SQLAlchemy for database abstraction and operations
+- **Validation**: Input validation and sanitization
+- **Security**: Password hashing, CORS configuration, and JWT management
+
+#### **Database Layer (MySQL)**
+- **Relational Database**: Structured data storage with referential integrity
+- **User Management**: Secure user accounts with hashed passwords
+- **Ticket Storage**: Kanban tickets with full CRUD operations
+- **Relationships**: Foreign key constraints ensuring data consistency
+
+#### **Security Layer**
+- **JWT Tokens**: Secure, stateless authentication tokens
+- **Password Hashing**: Bcrypt for secure password storage
+- **CORS**: Cross-origin resource sharing configuration
+- **Input Validation**: Frontend and backend validation layers
+
+### Data Flow
+
+1. **User Authentication**:
+   - User submits credentials via Angular form
+   - Frontend validates input and sends to Flask API
+   - Backend validates credentials and generates JWT token
+   - Token stored in frontend for subsequent requests
+
+2. **Ticket Operations**:
+   - User interacts with Kanban board (create/edit/move tickets)
+   - Angular services make authenticated API calls
+   - Flask processes requests and updates MySQL database
+   - Real-time UI updates reflect database changes
+
+3. **Security**:
+   - All API requests include JWT tokens via interceptors
+   - Backend validates tokens and user permissions
+   - Database operations are protected by authentication
+   - Input validation prevents malicious data injection
+
 ## Prerequisites
 
 - **Node.js** (v20.19.0 or higher)
