@@ -30,13 +30,34 @@ def create_database():
                 )
             """)
             
+            # Create the tickets table
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS tickets (
+                    id VARCHAR(36) PRIMARY KEY,
+                    title VARCHAR(200) NOT NULL,
+                    description TEXT NOT NULL,
+                    priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+                    status VARCHAR(20) NOT NULL DEFAULT 'todo',
+                    labels TEXT,
+                    user_id INT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                )
+            """)
+            
             # Create indexes
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_user_id ON tickets(user_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_priority ON tickets(priority)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_created_at ON tickets(created_at)")
             
         connection.commit()
         print("✅ Database 'auth_db' created successfully!")
         print("✅ Users table created with indexes!")
+        print("✅ Tickets table created with indexes!")
         
     except pymysql.Error as e:
         print(f"❌ Error connecting to MySQL: {e}")
@@ -68,8 +89,27 @@ def create_database():
                         )
                     """)
                     
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS tickets (
+                            id VARCHAR(36) PRIMARY KEY,
+                            title VARCHAR(200) NOT NULL,
+                            description TEXT NOT NULL,
+                            priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+                            status VARCHAR(20) NOT NULL DEFAULT 'todo',
+                            labels TEXT,
+                            user_id INT NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                        )
+                    """)
+                    
                     cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)")
                     cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_user_id ON tickets(user_id)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_priority ON tickets(priority)")
+                    cursor.execute("CREATE INDEX IF NOT EXISTS idx_tickets_created_at ON tickets(created_at)")
                     
                 connection.commit()
                 print(f"✅ Database created with password: {pwd}")

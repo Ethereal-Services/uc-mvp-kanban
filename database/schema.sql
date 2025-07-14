@@ -33,6 +33,26 @@ CREATE INDEX idx_sessions_token ON user_sessions(session_token);
 CREATE INDEX idx_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX idx_sessions_expires ON user_sessions(expires_at);
 
+-- Create tickets table for Kanban board
+CREATE TABLE tickets (
+    id VARCHAR(36) PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT NOT NULL,
+    priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+    status VARCHAR(20) NOT NULL DEFAULT 'todo',
+    labels TEXT,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create indexes for tickets table
+CREATE INDEX idx_tickets_user_id ON tickets(user_id);
+CREATE INDEX idx_tickets_status ON tickets(status);
+CREATE INDEX idx_tickets_priority ON tickets(priority);
+CREATE INDEX idx_tickets_created_at ON tickets(created_at);
+
 -- Sample data (optional)
 -- INSERT INTO users (username, email, password_hash) VALUES 
 -- ('testuser', 'test@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfHGBGZQcqsRjkG');
